@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: manga-mongo-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: manga-mongo
+  template:
+    metadata:
+      labels:
+        app: manga-mongo
+    spec:
+      containers:
+        - name: manga-mongo
+          image: mongo
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: manga-mongo-srv
+spec:
+  selector:
+    app: manga-mongo
+  ports:
+    - name: db
+      protocol: TCP
+      port: 27017
+      targetPort: 27017

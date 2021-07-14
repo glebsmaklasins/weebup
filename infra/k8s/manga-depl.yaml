@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: manga-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: manga
+  template:
+    metadata:
+      labels:
+        app: manga
+    spec:
+      containers:
+        - name: manga
+          image: glebsmaklasins/manga
+          env:
+            - name: MONGO_URI
+              value: "mongodb://manga-mongo-srv:27017/manga"
+            - name: JWT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret
+                  key: JWT_KEY
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: manga-srv
+spec:
+  selector:
+    app: manga
+  ports:
+    - name: manga
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
